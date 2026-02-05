@@ -95,14 +95,61 @@ namespace SeaBattle
             stream.Write(data, 0, data.Length);
         }
 
+        private void DrawGrid(Graphics g, PictureBox pbx)
+        {
+            g.Clear(Color.White);
+
+            using (Pen pen = new Pen(Color.Black, 1))
+            {
+                for (int i = 0; i <= 10; i++)
+                {
+                    int coord = i * 30;
+
+                    g.DrawLine(pen, coord, 0, coord, 300);
+                    g.DrawLine(pen, 0, coord, 300, coord);
+                }
+            }
+        }
+
+        private void DrawField(Graphics g, CellState[,] field)
+        {
+            for (int x = 0; x < 10; x++)
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    Rectangle cellRect = new Rectangle(x * CellSize, y * CellSize, CellSize, CellSize);
+
+                    if (field[x, y] == CellState.Miss)
+                    {
+                        int dotSize = 6;
+                        g.FillEllipse(Brushes.Gray,
+                            x * CellSize + (CellSize - dotSize) / 2,
+                            y * CellSize + (CellSize - dotSize) / 2,
+                            dotSize, dotSize);
+                    }
+                    else if (field[x, y] == CellState.Hit)
+                    {
+                        using (Pen hitPen = new Pen(Color.Red, 2))
+                        {
+                            int padding = 5;
+                            g.DrawLine(hitPen, cellRect.Left + padding, cellRect.Top + padding, cellRect.Right - padding, cellRect.Bottom - padding);
+                            g.DrawLine(hitPen, cellRect.Right - padding, cellRect.Top + padding, cellRect.Left + padding, cellRect.Bottom - padding);
+                        }
+                    }
+                }
+            }
+        }
+
         private void pbxSelf_Paint(object sender, PaintEventArgs e)
         {
-           
+            DrawGrid(e.Graphics, (PictureBox)sender);
+            DrawField(e.Graphics, game.MyField);
         }
 
         private void pbxEnemy_Paint(object sender, PaintEventArgs e)
         {
-            
+            DrawGrid(e.Graphics, (PictureBox)sender);
+            DrawField(e.Graphics, game.EnemyField);
         }
 
         private void pbxEnemy_MouseDown(object sender, MouseEventArgs e)
