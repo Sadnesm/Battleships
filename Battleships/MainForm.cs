@@ -95,6 +95,16 @@ namespace SeaBattle
             stream.Write(data, 0, data.Length);
         }
 
+        private void pbxSelf_Paint(object sender, PaintEventArgs e)
+        {
+           
+        }
+
+        private void pbxEnemy_Paint(object sender, PaintEventArgs e)
+        {
+            
+        }
+
         private void pbxEnemy_MouseDown(object sender, MouseEventArgs e)
         {
             if (status != GameStatus.MyTurn) return;

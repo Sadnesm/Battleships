@@ -47,6 +47,7 @@
             pbxSelf.Size = new Size(301, 301);
             pbxSelf.TabIndex = 0;
             pbxSelf.TabStop = false;
+            pbxSelf.Paint += pbxSelf_Paint;
             // 
             // pbxEnemy
             // 
@@ -56,6 +57,8 @@
             pbxEnemy.Size = new Size(301, 301);
             pbxEnemy.TabIndex = 1;
             pbxEnemy.TabStop = false;
+            pbxEnemy.Paint += pbxEnemy_Paint;
+            pbxEnemy.MouseDown += pbxEnemy_MouseDown;
             // 
             // txtIP
             // 
