@@ -117,24 +117,22 @@ namespace SeaBattle
             {
                 for (int y = 0; y < 10; y++)
                 {
-                    Rectangle cellRect = new Rectangle(x * CellSize, y * CellSize, CellSize, CellSize);
+                    Rectangle rect = new Rectangle(x * CellSize, y * CellSize, CellSize, CellSize);
 
-                    if (field[x, y] == CellState.Miss)
+                    if (field[x, y] == CellState.Ship)
                     {
-                        int dotSize = 6;
-                        g.FillEllipse(Brushes.Gray,
-                            x * CellSize + (CellSize - dotSize) / 2,
-                            y * CellSize + (CellSize - dotSize) / 2,
-                            dotSize, dotSize);
+                        g.FillRectangle(Brushes.Blue, rect);
+                        g.DrawRectangle(Pens.DarkBlue, rect);
                     }
                     else if (field[x, y] == CellState.Hit)
                     {
-                        using (Pen hitPen = new Pen(Color.Red, 2))
-                        {
-                            int padding = 5;
-                            g.DrawLine(hitPen, cellRect.Left + padding, cellRect.Top + padding, cellRect.Right - padding, cellRect.Bottom - padding);
-                            g.DrawLine(hitPen, cellRect.Right - padding, cellRect.Top + padding, cellRect.Left + padding, cellRect.Bottom - padding);
-                        }
+                        g.DrawLine(Pens.Red, rect.Left + 5, rect.Top + 5, rect.Right - 5, rect.Bottom - 5);
+                        g.DrawLine(Pens.Red, rect.Right - 5, rect.Top + 5, rect.Left + 5, rect.Bottom - 5);
+                    }
+                    else if (field[x, y] == CellState.Miss)
+                    {
+                        int dotSize = 6;
+                        g.FillEllipse(Brushes.Gray, x * CellSize + 12, y * CellSize + 12, dotSize, dotSize);
                     }
                 }
             }
@@ -170,6 +168,19 @@ namespace SeaBattle
             pbxSelf.Invalidate();
             pbxEnemy.Invalidate();
             lblStatus.Text = (status == GameStatus.MyTurn) ? "Ваш ход" : "Ход противника";
+        }
+
+        private void btnRandomPlace_Click(object sender, EventArgs e)
+        {
+            if (status != GameStatus.Placement && status != GameStatus.WaitingForPeer)
+            {
+                MessageBox.Show("Игра уже идет! Нельзя менять расстановку.");
+                return;
+            }
+
+            game.AutoPlaceShips();
+
+            pbxSelf.Invalidate();
         }
     }
 }

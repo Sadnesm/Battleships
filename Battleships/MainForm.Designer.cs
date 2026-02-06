@@ -35,6 +35,7 @@
             btnHost = new Button();
             btnConnect = new Button();
             lblStatus = new Label();
+            btnRandomPlace = new Button();
             ((System.ComponentModel.ISupportInitialize)pbxSelf).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbxEnemy).BeginInit();
             SuspendLayout();
@@ -105,11 +106,22 @@
             lblStatus.TabIndex = 6;
             lblStatus.Text = "Расставьте корабли";
             // 
+            // btnRandomPlace
+            // 
+            btnRandomPlace.Location = new Point(49, 93);
+            btnRandomPlace.Name = "btnRandomPlace";
+            btnRandomPlace.Size = new Size(142, 29);
+            btnRandomPlace.TabIndex = 7;
+            btnRandomPlace.Text = "Авто-расстановка";
+            btnRandomPlace.UseVisualStyleBackColor = true;
+            btnRandomPlace.Click += btnRandomPlace_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 470);
+            Controls.Add(btnRandomPlace);
             Controls.Add(lblStatus);
             Controls.Add(btnConnect);
             Controls.Add(btnHost);
@@ -134,5 +146,6 @@
         private Button btnHost;
         private Button btnConnect;
         private Label lblStatus;
+        private Button btnRandomPlace;
     }
 }
