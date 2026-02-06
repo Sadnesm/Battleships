@@ -137,5 +137,48 @@ namespace SeaBattle
             MyField[x, y] = CellState.Miss;
             return "Miss";
         }
+
+        public void MarkSunkShipHalo(Ship ship, bool isMyField)
+        {
+            var field = isMyField ? MyField : EnemyField;
+
+            foreach (var deck in ship.Decks)
+            {
+                // Проверяем все 8 клеток вокруг каждой палубы
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        int nx = deck.X + dx;
+                        int ny = deck.Y + dy;
+
+                        // Если клетка в пределах поля и она пустая — ставим промах
+                        if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10)
+                        {
+                            if (field[nx, ny] == CellState.Empty)
+                            {
+                                field[nx, ny] = CellState.Miss;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void MarkEnemySunkHalo(int x, int y)
+        {
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
+                    if (EnemyField[i, j] == CellState.Hit)
+                    {
+                        for (int dx = -1; dx <= 1; dx++)
+                            for (int dy = -1; dy <= 1; dy++)
+                            {
+                                int nx = i + dx, ny = j + dy;
+                                if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10 && EnemyField[nx, ny] == CellState.Empty)
+                                    EnemyField[nx, ny] = CellState.Miss;
+                            }
+                    }
+        }
     }
 }

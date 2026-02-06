@@ -72,19 +72,62 @@ namespace SeaBattle
             }
         }
 
+        private void CheckGameOver()
+        {
+            // Проверка наших кораблей (поражение)
+            if (game.MyShips.All(s => s.IsSunk))
+            {
+                status = GameStatus.GameOver;
+                lblStatus.Text = "ПОРАЖЕНИЕ!";
+                MessageBox.Show("Все ваши корабли потоплены. Вы проиграли!");
+            }
+            // Проверка кораблей врага (победа)
+            // Cчитаем попадания: всего 20 палуб)
+            int enemyHits = 0;
+            for (int x = 0; x < 10; x++)
+                for (int y = 0; y < 10; y++)
+                    if (game.EnemyField[x, y] == CellState.Hit) enemyHits++;
+
+            if (enemyHits == 20)
+            {
+                status = GameStatus.GameOver;
+                lblStatus.Text = "ПОБЕДА!";
+                MessageBox.Show("Поздравляем! Вы уничтожили все корабли противника!");
+            }
+        }
+
         private void HandleIncomingMessage(GameMessage msg)
         {
             if (msg.Type == "Shot")
             {
                 string result = game.ProcessEnemyShot(msg.X, msg.Y);
+
+                if (result == "Sunk")
+                {
+                    var ship = game.MyShips.First(s => s.Decks.Contains(new Point(msg.X, msg.Y)));
+                    game.MarkSunkShipHalo(ship, true);
+                }
+
                 Send(new GameMessage { Type = "Result", X = msg.X, Y = msg.Y, Status = result });
                 if (result == "Miss") status = GameStatus.MyTurn;
             }
             else if (msg.Type == "Result")
             {
-                game.EnemyField[msg.X, msg.Y] = (msg.Status == "Miss") ? CellState.Miss : CellState.Hit;
+                if (msg.Status == "Sunk")
+                {
+                    game.EnemyField[msg.X, msg.Y] = CellState.Hit;
+                    game.MarkEnemySunkHalo(msg.X, msg.Y);
+                    MessageBox.Show("Корабль противника потоплен!");
+                }
+                else
+                {
+                    game.EnemyField[msg.X, msg.Y] = (msg.Status == "Miss") ? CellState.Miss : CellState.Hit;
+                }
+
                 if (msg.Status == "Miss") status = GameStatus.EnemyTurn;
             }
+
+            CheckGameOver();
             RefreshUI();
         }
 
